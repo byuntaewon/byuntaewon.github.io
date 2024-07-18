@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,3 +20,102 @@
     <script src="script.js"></script>
 </body>
 </html>
+ -->
+
+ <!DOCTYPE html><html lang="ko"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅창</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .chat-container {
+            width: 60%;
+            max-width: 800px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-title {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .message.sent {
+            justify-content: flex-end;
+        }
+        .message.received {
+            justify-content: flex-start;
+        }
+        .message-content {
+            max-width: 60%;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .message.sent .message-content {
+            background-color: #007bff;
+            color: white;
+        }
+        .message.received .message-content {
+            background-color: #e4e4e4;
+            color: black;
+        }
+        .chat-input {
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+        .chat-input button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .chat-input button:hover {
+            background-color: #0056b3;
+        }
+    </style></head><body>
+    <div class="chat-container">
+        <div class="chat-title">채팅창</div>
+        <div class="chat-messages">
+            <div class="message received">
+                <div class="message-content">안녕하세요!</div>
+            </div>
+            <div class="message sent">
+                <div class="message-content">안녕하세요! 잘 지내시나요?</div>
+            </div>
+            <!-- 더 많은 메시지를 여기에 추가할 수 있습니다 -->
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="메시지를 입력하세요...">
+            <button type="button">전송</button>
+        </div>
+    </div></body></html>
