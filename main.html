@@ -22,7 +22,9 @@
 </html>
  -->
 
- <!DOCTYPE html><html lang="ko"><head>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>채팅창</title>
@@ -102,10 +104,12 @@
         .chat-input button:hover {
             background-color: #0056b3;
         }
-    </style></head><body>
+    </style>
+</head>
+<body>
     <div class="chat-container">
         <div class="chat-title">채팅창</div>
-        <div class="chat-messages">
+        <div class="chat-messages" id="chat-messages">
             <div class="message received">
                 <div class="message-content">안녕하세요!</div>
             </div>
@@ -115,7 +119,34 @@
             <!-- 더 많은 메시지를 여기에 추가할 수 있습니다 -->
         </div>
         <div class="chat-input">
-            <input type="text" placeholder="메시지를 입력하세요...">
-            <button type="button">전송</button>
+            <input type="text" id="chat-input" placeholder="메시지를 입력하세요...">
+            <button type="button" onclick="sendMessage()">전송</button>
         </div>
-    </div></body></html>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var input = document.getElementById("chat-input");
+            var messageText = input.value.trim();
+            if (messageText !== "") {
+                var messageContainer = document.createElement("div");
+                messageContainer.className = "message sent";
+                
+                var messageContent = document.createElement("div");
+                messageContent.className = "message-content";
+                messageContent.textContent = messageText;
+                
+                messageContainer.appendChild(messageContent);
+                
+                document.getElementById("chat-messages").appendChild(messageContainer);
+                input.value = "";
+                input.focus();
+                
+                // 새로운 메시지가 추가되면 스크롤을 맨 아래로 이동
+                var chatMessages = document.getElementById("chat-messages");
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+    </script>
+</body>
+</html>
