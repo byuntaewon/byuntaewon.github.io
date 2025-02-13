@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>연봉별 실수령액</title>
+  <title>연봉별 월 실수령액</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -31,9 +31,8 @@
       margin-bottom: 10px;
       text-align: center;
     }
-    /* 연봉과 칼럼은 좌측 정렬 */
-    th:first-child, td:first-child,
-    th:last-child, td:last-child {
+    /* 연봉 열은 좌측 정렬 */
+    th:first-child, td:first-child {
       text-align: left;
     }
     /* 구분용 빈 행 스타일 */
@@ -46,16 +45,16 @@
 </head>
 <body>
   <table>
-    <caption>연봉별 실수령액 계산 (예시)</caption>
+    <caption>연봉별 월 실수령액 계산 (예시)</caption>
     <thead>
       <tr>
         <th>연봉 (원)</th>
-        <th>실수령액 (원)</th>
-        <th>공제액계 (원)</th>
+        <th>월 실수령액 (원)</th>
+        <th>월 공제액계 (원)</th>
         <th>국민연금 (4.5%)</th>
         <th>건강보험 (3.545%)</th>
-        <th>장기요양 (건강보험의 12.95%)</th>
-        <th>고용보험 (과세금액의 9%)</th>
+        <th>장기요양<br>(건강보험의 12.95%)</th>
+        <th>고용보험<br>(과세금액의 9%)</th>
       </tr>
     </thead>
     <tbody id="salaryTableBody">
@@ -76,11 +75,13 @@
     const endSalary   = 100000000;    // 1억원
     const step        = 1000000;     // 100만원 단위
 
-    let rowCount = 0; // 그룹 내 행 카운터
+    let rowCount = 0; // 행 카운터
 
     for (let annual = startSalary; annual <= endSalary; annual += step) {
-      // 월 단위로 계산 (실제 급여는 매월 반올림 후 12배)
+      // 월 급여 계산: 연봉을 12로 나눈 후 소수점 이하 버림 처리
       const monthlyGross = Math.floor(annual / 12);
+
+      // 월별 공제액 계산 (소득세/지방소득세는 0원으로 처리)
       const pensionMonthly = Math.floor(monthlyGross * pensionRate);
       const healthMonthly  = Math.floor(monthlyGross * healthRate);
       const longTermMonthly = Math.floor(healthMonthly * longTermRate);
@@ -88,13 +89,6 @@
 
       const monthlyDeduction = pensionMonthly + healthMonthly + longTermMonthly + employmentMonthly;
       const monthlyNet = monthlyGross - monthlyDeduction;
-
-      const annualNet = monthlyNet * 12;
-      const annualDeduction = monthlyDeduction * 12;
-      const annualPension = pensionMonthly * 12;
-      const annualHealth  = healthMonthly * 12;
-      const annualLongTerm = longTermMonthly * 12;
-      const annualEmployment = employmentMonthly * 12;
 
       // 새로운 행 생성
       const tr = document.createElement('tr');
@@ -106,18 +100,13 @@
         return td;
       }
 
-      tr.appendChild(createCell(annual));           // 연봉
-      tr.appendChild(createCell(annualNet));          // 실수령액
-      tr.appendChild(createCell(annualDeduction));    // 공제액계
-      tr.appendChild(createCell(annualPension));      // 국민연금
-      tr.appendChild(createCell(annualHealth));       // 건강보험
-      tr.appendChild(createCell(annualLongTerm));     // 장기요양
-      tr.appendChild(createCell(annualEmployment));   // 고용보험
-
-      // 칼럼 (원하는 내용으로 수정 가능)
-      const colTd = document.createElement('td');
-      colTd.textContent = "예시";
-      tr.appendChild(colTd);
+      tr.appendChild(createCell(annual));         // 연봉 (입력값)
+      tr.appendChild(createCell(monthlyNet));       // 월 실수령액
+      tr.appendChild(createCell(monthlyDeduction)); // 월 공제액계
+      tr.appendChild(createCell(pensionMonthly));   // 국민연금
+      tr.appendChild(createCell(healthMonthly));    // 건강보험
+      tr.appendChild(createCell(longTermMonthly));  // 장기요양
+      tr.appendChild(createCell(employmentMonthly));// 고용보험
 
       tbody.appendChild(tr);
 
@@ -126,7 +115,7 @@
       if (rowCount % 5 === 0 && annual < endSalary) {
         const gapTr = document.createElement('tr');
         const gapTd = document.createElement('td');
-        gapTd.colSpan = 8;
+        gapTd.colSpan = 7;
         gapTd.className = 'gap';
         gapTr.appendChild(gapTd);
         tbody.appendChild(gapTr);
