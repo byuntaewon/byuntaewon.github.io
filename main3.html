@@ -1,126 +1,99 @@
-<!DOCTYPE html><html lang="ko"><head>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
   <meta charset="UTF-8">
-  <title>2025 실수령액 계산기</title>
+  <title>연봉별 실수령액 표 (예시)</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
       background-color: #f7f7f7;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    .calculator-container {
-      max-width: 600px;
-      margin: 20px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    form {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    input[type="number"] {
-      padding: 8px;
-      width: 200px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin-right: 10px;
-    }
-    button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      background-color: #007BFF;
-      color: #fff;
-      cursor: pointer;
+      margin: 20px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      text-align: right;
     }
     th, td {
-      padding: 12px;
-      border: 1px solid #ddd;
-      text-align: center;
+      border: 1px solid #ccc;
+      padding: 8px;
     }
     th {
-      background-color: #f2f2f2;
+      background-color: #eee;
     }
-  </style></head><body>
-  <div class="calculator-container">
-    <h1>2025 실수령액 계산기</h1>
-    <form id="salaryForm">
-      <input type="number" id="grossSalary" placeholder="세전 급여 (원)" required>
-      <button type="submit">계산하기</button>
-    </form>
-    <table>
-      <thead>
-        <tr>
-          <th>항목</th>
-          <th>금액 (원)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>세전 급여</td>
-          <td id="grossSalaryDisplay">0</td>
-        </tr>
-        <tr>
-          <td>소득세</td>
-          <td id="taxDisplay">0</td>
-        </tr>
-        <tr>
-          <td>건강보험</td>
-          <td id="healthInsuranceDisplay">0</td>
-        </tr>
-        <tr>
-          <td>국민연금</td>
-          <td id="nationalPensionDisplay">0</td>
-        </tr>
-        <tr>
-          <td>고용보험</td>
-          <td id="employmentInsuranceDisplay">0</td>
-        </tr>
-        <tr>
-          <td><strong>실수령액</strong></td>
-          <td id="netSalaryDisplay"><strong>0</strong></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    caption {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <table id="salaryTable">
+    <caption>연봉별 실수령액 계산 (예시)</caption>
+    <thead>
+      <tr>
+        <th>연봉 (원)</th>
+        <th>월세전급여 (원)</th>
+        <th>소득세 (원)</th>
+        <th>건강보험 (원)</th>
+        <th>국민연금 (원)</th>
+        <th>고용보험 (원)</th>
+        <th>월실수령액 (원)</th>
+        <th>연실수령액 (원)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- 자바스크립트를 통해 행이 추가됩니다 -->
+    </tbody>
+  </table>
 
   <script>
-    // 폼 제출 이벤트 리스너
-    document.getElementById('salaryForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const grossSalary = Number(document.getElementById('grossSalary').value);
+    // 예시 세율 (실제와 다를 수 있습니다)
+    const taxRate = 0.10;              // 소득세 10%
+    const healthInsuranceRate = 0.03;  // 건강보험 3%
+    const nationalPensionRate = 0.045; // 국민연금 4.5%
+    const employmentInsuranceRate = 0.005; // 고용보험 0.5%
 
-      // 예시 계산식 (실제 계산식은 2025년 기준으로 최신 정보를 반영하세요)
-      const taxRate = 0.10;              // 예: 소득세 10%
-      const healthInsuranceRate = 0.03;  // 예: 건강보험 3%
-      const nationalPensionRate = 0.045; // 예: 국민연금 4.5%
-      const employmentInsuranceRate = 0.005; // 예: 고용보험 0.5%
+    const tbody = document.querySelector("#salaryTable tbody");
 
-      const tax = grossSalary * taxRate;
-      const healthInsurance = grossSalary * healthInsuranceRate;
-      const nationalPension = grossSalary * nationalPensionRate;
-      const employmentInsurance = grossSalary * employmentInsuranceRate;
-
+    // 연봉: 10,000,000원부터 100,000,000원까지 (1,000,000원 단위)
+    for (let annual = 10000000; annual <= 100000000; annual += 1000000) {
+      // 월세전급여: 연봉을 12로 나눔
+      const monthlyGross = annual / 12;
+      
+      // 각 공제액 계산 (간단 예시)
+      const tax = monthlyGross * taxRate;
+      const healthInsurance = monthlyGross * healthInsuranceRate;
+      const nationalPension = monthlyGross * nationalPensionRate;
+      const employmentInsurance = monthlyGross * employmentInsuranceRate;
+      
       const totalDeductions = tax + healthInsurance + nationalPension + employmentInsurance;
-      const netSalary = grossSalary - totalDeductions;
-
-      // 결과를 표에 업데이트
-      document.getElementById('grossSalaryDisplay').innerText = grossSalary.toLocaleString();
-      document.getElementById('taxDisplay').innerText = tax.toLocaleString();
-      document.getElementById('healthInsuranceDisplay').innerText = healthInsurance.toLocaleString();
-      document.getElementById('nationalPensionDisplay').innerText = nationalPension.toLocaleString();
-      document.getElementById('employmentInsuranceDisplay').innerText = employmentInsurance.toLocaleString();
-      document.getElementById('netSalaryDisplay').innerText = netSalary.toLocaleString();
-    });
-  </script></body></html>
+      const monthlyNet = monthlyGross - totalDeductions;
+      const annualNet = monthlyNet * 12;
+      
+      // 테이블 행 생성
+      const row = document.createElement("tr");
+      
+      // 셀 생성 헬퍼 함수
+      function createCell(value) {
+        const cell = document.createElement("td");
+        cell.textContent = Number(value).toLocaleString("ko-KR", { maximumFractionDigits: 0 });
+        return cell;
+      }
+      
+      row.appendChild(createCell(annual));            // 연봉
+      row.appendChild(createCell(monthlyGross));        // 월세전급여
+      row.appendChild(createCell(tax));                 // 소득세
+      row.appendChild(createCell(healthInsurance));     // 건강보험
+      row.appendChild(createCell(nationalPension));       // 국민연금
+      row.appendChild(createCell(employmentInsurance)); // 고용보험
+      row.appendChild(createCell(monthlyNet));          // 월실수령액
+      row.appendChild(createCell(annualNet));           // 연실수령액
+      
+      tbody.appendChild(row);
+    }
+  </script>
+</body>
+</html>
