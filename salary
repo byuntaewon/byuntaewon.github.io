@@ -1,1 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>연봉별 실수령액 (컴팩트 버전)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    table {
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+      text-align: right;
+      font-size: 0.9em;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+    }
+    th {
+      background: #eee;
+    }
+    caption {
+      font-size: 1.4em;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    /* 연봉과 칼럼은 좌측 정렬 */
+    th:first-child, td:first-child,
+    th:last-child, td:last-child {
+      text-align: left;
+    }
+    /* 구분용 빈 행 스타일 */
+    .gap {
+      border: none;
+      height: 10px;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <caption>연봉별 실수령액 계산 (예시)</caption>
+    <thead>
+      <tr>
+        <th>연봉 (원)</th>
+        <th>실수령액 (원)</th>
+        <th>공제액계 (원)</th>
+        <th>국민연금 (4.5%)</th>
+        <th>건강보험 (3.545%)</th>
+        <th>장기요양 (건강보험의 12.95%)</th>
+        <th>고용보험 (과세금액의 9%)</th>
+        <th>칼럼</th>
+      </tr>
+    </thead>
+    <tbody id="salaryTableBody">
+      <!-- 자바스크립트로 행 추가 -->
+    </tbody>
+  </table>
 
+  <script>
+    const tbody = document.getElementById('salaryTableBody');
+
+    // 공제율 (연봉 기준 계산, 예시용)
+    const pensionRate = 0.045;       // 국민연금 4.5%
+    const healthRate  = 0.03545;     // 건강보험 3.545%
+    const longTermRate = 0.1295;     // 장기요양: 건강보험 금액의 12.95%
+    const employmentRate = 0.09;     // 고용보험 9%
+    
+    const startSalary = 10000000;    // 1천만원
+    const endSalary   = 100000000;    // 1억원
+    const step        = 1000000;     // 100만원 단위
+    let rowCount = 0;                // 그룹 내 행 카운터
+
+    for (let annual = startSalary; annual <= endSalary; annual += step) {
+      // 각 항목 계산 (소득세, 지방소득세는 0원)
+      const pension    = annual * pensionRate;
+      const health     = annual * healthRate;
+      const longTerm   = health * longTermRate;
+      const employment = annual * employmentRate;
+      const totalDeduction = pension + health + longTerm + employment;
+      const netSalary  = annual - totalDeduction;
+      
+      // 새로운 행 생성
+      const tr = document.createElement('tr');
+
+      // 셀 생성 함수
+      function createCell(value) {
+        const td = document.createElement('td');
+        td.textContent = Number(value).toLocaleString('ko-KR', { maximumFractionDigits: 0 });
+        return td;
+      }
+      
+      tr.appendChild(createCell(annual));         // 연봉
+      tr.appendChild(createCell(netSalary));        // 실수령액
+      tr.appendChild(createCell(totalDeduction));   // 공제액계
+      tr.appendChild(createCell(pension));          // 국민연금
+      tr.appendChild(createCell(health));           // 건강보험
+      tr.appendChild(createCell(longTerm));         // 장기요양
+      tr.appendChild(createCell(employment));       // 고용보험
+      
+      // 칼럼 (원하는 내용으로 수정 가능)
+      const colTd = document.createElement('td');
+      colTd.textContent = "예시";
+      tr.appendChild(colTd);
+      
+      tbody.appendChild(tr);
+      
+      rowCount++;
+      
+      // 5행마다 구분용 빈 행 추가 (단, 마지막 행 이후는 추가하지 않음)
+      if (rowCount % 5 === 0 && annual < endSalary) {
+        const gapTr = document.createElement('tr');
+        const gapTd = document.createElement('td');
+        gapTd.colSpan = 8;
+        gapTd.className = 'gap';
+        gapTr.appendChild(gapTd);
+        tbody.appendChild(gapTr);
+      }
+    }
+  </script>
+</body>
+</html>
