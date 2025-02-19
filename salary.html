@@ -83,28 +83,34 @@
     }
 
     function computeAnnualIncomeTax(annual) {
-      const taxable = Math.max(0, annual - calculateWorkIncomeDeduction(annual));
+    const taxable = Math.max(0, annual - calculateWorkIncomeDeduction(annual));
 
-      let tax = 0;
-      const taxBrackets = [
-        { limit: 14000000, rate: 0.06, deduction: 0 },
-        { limit: 50000000, rate: 0.15, deduction: 1260000 },
-        { limit: 88000000, rate: 0.24, deduction: 5760000 },
-        { limit: 150000000, rate: 0.35, deduction: 15440000 },
-        { limit: 300000000, rate: 0.38, deduction: 34690000 },
-        { limit: 500000000, rate: 0.40, deduction: 69490000 },
-        { limit: Infinity, rate: 0.42, deduction: 139490000 }
-      ];
+    let tax = 0;
+    let previousLimit = 0;
 
-      for (const bracket of taxBrackets) {
-        if (taxable <= bracket.limit) {
-          tax = taxable * bracket.rate - bracket.deduction;
-          break;
+    const taxBrackets = [
+        { limit: 14000000, rate: 0.06 },
+        { limit: 50000000, rate: 0.15 },
+        { limit: 88000000, rate: 0.24 },
+        { limit: 150000000, rate: 0.35 },
+        { limit: 300000000, rate: 0.38 },
+        { limit: 500000000, rate: 0.40 },
+        { limit: Infinity, rate: 0.42 }
+    ];
+
+    for (const bracket of taxBrackets) {
+        if (taxable > previousLimit) {
+            const amountInBracket = Math.min(taxable, bracket.limit) - previousLimit;
+            tax += amountInBracket * bracket.rate;
+            previousLimit = bracket.limit;
+        } else {
+            break;
         }
-      }
-
-      return Math.max(0, Math.floor(tax));
     }
+
+    return Math.max(0, Math.floor(tax));
+}
+
 
     const startSalary = 10000000;
     const endSalary = 100000000;
