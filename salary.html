@@ -74,60 +74,61 @@
     const longTermRate = 0.1295;
     const employmentRate = 0.009;
 
-function calculateWorkIncomeDeduction(annual) {
-  if (annual <= 5000000) return annual * 0.70;
-  if (annual <= 15000000) return 3500000 + (annual - 5000000) * 0.40;
-  if (annual <= 45000000) return 7500000 + (annual - 15000000) * 0.15;
-  if (annual <= 100000000) return 12000000 + (annual - 45000000) * 0.05;
-  return 14750000 + (annual - 100000000) * 0.02;
-}
-    
-function calculateTaxableIncome(annual) {
-  const workDeduction = calculateWorkIncomeDeduction(annual);
-  const personalDeduction = 1500000; // 본인 1명 기준
-  return Math.max(0, annual - workDeduction - personalDeduction);
-}
-
-function computeAnnualIncomeTax(annual) {
-  const taxable = calculateTaxableIncome(annual);
-  const taxBrackets = [
-    { limit: 12000000, rate: 0.06, baseTax: 0 },
-    { limit: 46000000, rate: 0.15, baseTax: 720000 },
-    { limit: 88000000, rate: 0.24, baseTax: 5820000 },
-    { limit: 150000000, rate: 0.35, baseTax: 15900000 },
-    { limit: 300000000, rate: 0.38, baseTax: 40900000 },
-    { limit: 500000000, rate: 0.40, baseTax: 94900000 },
-    { limit: Infinity, rate: 0.42, baseTax: 174900000 }
-  ];
-
-  let tax = 0;
-  for (let i = 0; i < taxBrackets.length; i++) {
-    if (taxable <= taxBrackets[i].limit) {
-      tax = taxBrackets[i].baseTax + (taxable - (i > 0 ? taxBrackets[i - 1].limit : 0)) * taxBrackets[i].rate;
-      break;
+    function calculateWorkIncomeDeduction(annual) {
+      if (annual <= 5000000) return annual * 0.70;
+      if (annual <= 15000000) return 3500000 + (annual - 5000000) * 0.40;
+      if (annual <= 45000000) return 7500000 + (annual - 15000000) * 0.15;
+      if (annual <= 100000000) return 12000000 + (annual - 45000000) * 0.05;
+      return 14750000 + (annual - 100000000) * 0.02;
     }
-  }
-  return Math.floor(tax);
-}
-function computeTaxCredit(annual, incomeTax) {
-  let credit = 0;
-  if (annual <= 33000000) {
-    credit = Math.min(incomeTax * 0.55, 740000);
-  } else if (annual <= 70000000) {
-    credit = 740000 - ((annual - 33000000) * 0.008);
-    credit = Math.max(credit, 660000);
-  } else {
-    credit = 660000 - ((annual - 70000000) * 0.5);
-    credit = Math.max(credit, 0);
-  }
-  return Math.floor(credit);
-}
+    
+    function calculateTaxableIncome(annual) {
+      const workDeduction = calculateWorkIncomeDeduction(annual);
+      const personalDeduction = 1500000; // 본인 1명 기준
+      return Math.max(0, annual - workDeduction - personalDeduction);
+    }
 
-function computeFinalIncomeTax(annual) {
-  const incomeTax = computeAnnualIncomeTax(annual);
-  const taxCredit = computeTaxCredit(annual, incomeTax);
-  return Math.max(0, incomeTax - taxCredit);
-}
+    function computeAnnualIncomeTax(annual) {
+      const taxable = calculateTaxableIncome(annual);
+      const taxBrackets = [
+        { limit: 12000000, rate: 0.06, baseTax: 0 },
+        { limit: 46000000, rate: 0.15, baseTax: 720000 },
+        { limit: 88000000, rate: 0.24, baseTax: 5820000 },
+        { limit: 150000000, rate: 0.35, baseTax: 15900000 },
+        { limit: 300000000, rate: 0.38, baseTax: 40900000 },
+        { limit: 500000000, rate: 0.40, baseTax: 94900000 },
+        { limit: Infinity, rate: 0.42, baseTax: 174900000 }
+      ];
+
+      let tax = 0;
+      for (let i = 0; i < taxBrackets.length; i++) {
+        if (taxable <= taxBrackets[i].limit) {
+          tax = taxBrackets[i].baseTax + (taxable - (i > 0 ? taxBrackets[i - 1].limit : 0)) * taxBrackets[i].rate;
+          break;
+        }
+      }
+      return Math.floor(tax);
+    }
+
+    function computeTaxCredit(annual, incomeTax) {
+      let credit = 0;
+      if (annual <= 33000000) {
+        credit = Math.min(incomeTax * 0.55, 740000);
+      } else if (annual <= 70000000) {
+        credit = 740000 - ((annual - 33000000) * 0.008);
+        credit = Math.max(credit, 660000);
+      } else {
+        credit = 660000 - ((annual - 70000000) * 0.5);
+        credit = Math.max(credit, 0);
+      }
+      return Math.floor(credit);
+    }
+
+    function computeFinalIncomeTax(annual) {
+      const incomeTax = computeAnnualIncomeTax(annual);
+      const taxCredit = computeTaxCredit(annual, incomeTax);
+      return Math.max(0, incomeTax - taxCredit);
+    }
 
     const startSalary = 10000000;
     const endSalary = 100000000;
@@ -135,20 +136,21 @@ function computeFinalIncomeTax(annual) {
     let rowCount = 0;
 
     for (let annual = startSalary; annual <= endSalary; annual += step) {
-const nonTaxable = 200000; // 월 비과세 20만 원
-const taxableMonthlyGross = monthlyGross - nonTaxable;
+      const monthlyGross = Math.floor(annual / 12); // 세전 월급
+      const nonTaxable = 200000; // 월 비과세 20만 원
+      const taxableMonthlyGross = Math.max(0, monthlyGross - nonTaxable); // 과세 대상 월급
 
-const pensionMonthly = Math.floor(taxableMonthlyGross * pensionRate);
-const healthMonthly = Math.floor(taxableMonthlyGross * healthRate);
-const longTermMonthly = Math.floor(healthMonthly * longTermRate);
-const employmentMonthly = Math.floor(taxableMonthlyGross * employmentRate);
+      const pensionMonthly = Math.floor(taxableMonthlyGross * pensionRate);
+      const healthMonthly = Math.floor(taxableMonthlyGross * healthRate);
+      const longTermMonthly = Math.floor(healthMonthly * longTermRate);
+      const employmentMonthly = Math.floor(taxableMonthlyGross * employmentRate);
 
-const annualIncomeTax = computeFinalIncomeTax(annual);
-const monthlyIncomeTax = Math.floor(annualIncomeTax / 12);
-const monthlyLocalTax = Math.floor((annualIncomeTax * 0.1) / 12);
+      const annualIncomeTax = computeFinalIncomeTax(annual);
+      const monthlyIncomeTax = Math.floor(annualIncomeTax / 12);
+      const monthlyLocalTax = Math.floor((annualIncomeTax * 0.1) / 12);
 
-const monthlyDeduction = pensionMonthly + healthMonthly + longTermMonthly + employmentMonthly + monthlyIncomeTax + monthlyLocalTax;
-const monthlyNet = monthlyGross - monthlyDeduction;
+      const monthlyDeduction = pensionMonthly + healthMonthly + longTermMonthly + employmentMonthly + monthlyIncomeTax + monthlyLocalTax;
+      const monthlyNet = monthlyGross - monthlyDeduction;
 
       const tr = document.createElement('tr');
 
