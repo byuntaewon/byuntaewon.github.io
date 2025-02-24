@@ -135,19 +135,20 @@ function computeFinalIncomeTax(annual) {
     let rowCount = 0;
 
     for (let annual = startSalary; annual <= endSalary; annual += step) {
-      const monthlyGross = Math.floor(annual / 12);
+const nonTaxable = 200000; // 월 비과세 20만 원
+const taxableMonthlyGross = monthlyGross - nonTaxable;
 
-      const pensionMonthly = Math.floor(monthlyGross * pensionRate);
-      const healthMonthly = Math.floor(monthlyGross * healthRate);
-      const longTermMonthly = Math.floor(healthMonthly * longTermRate);
-      const employmentMonthly = Math.floor(monthlyGross * employmentRate);
+const pensionMonthly = Math.floor(taxableMonthlyGross * pensionRate);
+const healthMonthly = Math.floor(taxableMonthlyGross * healthRate);
+const longTermMonthly = Math.floor(healthMonthly * longTermRate);
+const employmentMonthly = Math.floor(taxableMonthlyGross * employmentRate);
 
 const annualIncomeTax = computeFinalIncomeTax(annual);
 const monthlyIncomeTax = Math.floor(annualIncomeTax / 12);
 const monthlyLocalTax = Math.floor((annualIncomeTax * 0.1) / 12);
 
-      const monthlyDeduction = pensionMonthly + healthMonthly + longTermMonthly + employmentMonthly + monthlyIncomeTax + monthlyLocalTax;
-      const monthlyNet = monthlyGross - monthlyDeduction;
+const monthlyDeduction = pensionMonthly + healthMonthly + longTermMonthly + employmentMonthly + monthlyIncomeTax + monthlyLocalTax;
+const monthlyNet = monthlyGross - monthlyDeduction;
 
       const tr = document.createElement('tr');
 
