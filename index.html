@@ -61,9 +61,9 @@
         const loader = new GLTFLoader();
         loader.load(
             // --- 이 부분을 실제 파일 경로로 변경하세요 ---
-            './your_model.glb', 
+                'https://byuntaewon.github.io/backpack.usdz', // <-- 이렇게!
             // 로드 완료 시 실행되는 함수
-            function (gltf) {
+            function (usdz) {
                 const model = gltf.scene;
                 scene.add(model);
                 console.log("모델 로드 성공!");
