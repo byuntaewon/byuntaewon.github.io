@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js 샘플 뷰어</title>
+    <title>Three.js USDZ 뷰어</title>
     <style>
         /* HTML과 Body가 캔버스를 꽉 채우도록 설정 */
         body { margin: 0; }
@@ -23,8 +23,10 @@
     <script type="module">
         // 3. 필요한 모듈들을 import 합니다.
         import * as THREE from 'three';
-        // (필수) GLB/GLTF 모델 로더
-        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        
+        // (수정) GLTFLoader가 아닌 USDLoader를 import 합니다.
+        import { USDLoader } from 'three/addons/loaders/USDLoader.js'; 
+        
         // (선택) 마우스로 모델을 돌려볼 수 있게 하는 컨트롤러
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -57,24 +59,31 @@
         directionalLight.position.set(5, 10, 7.5);
         scene.add(directionalLight);
 
-        // 7. (핵심) GLTF 로더 생성 및 모델 로드
-        const loader = new GLTFLoader();
+        // 7. (핵심) USDLoader 로더 생성 및 모델 로드
+        
+        // (수정) GLTFLoader 대신 USDLoader를 생성합니다.
+        const loader = new USDLoader(); 
+        
         loader.load(
-            // --- 이 부분을 실제 파일 경로로 변경하세요 ---
-                'https://byuntaewon.github.io/backpack.usdz', // <-- 이렇게!
+            // 이 파일 경로는 올바릅니다.
+            'https://byuntaewon.github.io/backpack.usdz', 
+            
             // 로드 완료 시 실행되는 함수
-            function (usdz) {
-                const model = gltf.scene;
-                scene.add(model);
-                console.log("모델 로드 성공!");
+            // (수정) USDLoader는 'model' 객체를 바로 반환합니다. (gltf.scene이 아님)
+            function ( model ) {
+                // (수정) model 객체를 장면에 바로 추가합니다.
+                scene.add( model ); 
+                console.log("USDZ 모델 로드 성공!");
             },
+            
             // (선택) 로드 진행 중 실행되는 함수
             function (xhr) {
                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
+            
             // (선택) 로드 실패 시 실행되는 함수
             function (error) {
-                console.error('모델 로드 중 에러 발생', error);
+                console.error('USDZ 모델 로드 중 에러 발생', error);
             }
         );
 
