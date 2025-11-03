@@ -1,8 +1,32 @@
-<script type="module">
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js USDZ 뷰어</title>
+    <style>
+        /* HTML과 Body가 캔버스를 꽉 채우도록 설정 */
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
         // 3. 필요한 모듈들을 import 합니다.
+        // 'three'라는 이름은 importmap에 의해 URL로 치환됩니다.
         import * as THREE from 'three';
         
-        // (수정) USDLoader.js -> USDZLoader.js 로 변경
+        // (수정) USDZLoader.js 로 변경
         import { USDZLoader } from 'three/addons/loaders/USDZLoader.js'; 
         
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -38,7 +62,7 @@
 
         // 7. (핵심) USDZLoader 로더 생성 및 모델 로드
         
-        // (수정) new USDLoader() -> new USDZLoader() 로 변경
+        // (수정) new USDZLoader() 로 변경
         const loader = new USDZLoader(); 
         
         loader.load(
@@ -75,3 +99,5 @@
         });
 
     </script>
+</body>
+</html>
